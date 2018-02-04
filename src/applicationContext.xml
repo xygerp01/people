@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"    
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:aop="http://www.springframework.org/schema/aop"    
+        xsi:schemaLocation="     
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd      
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">  
+
+
+	<!--方法2: 1.需要注入的类不写setAnimal方法  2.实现 类要注解@Component("animal") 3. 在需要注入地方@Resource(name="animal")-->
+	<context:component-scan base-package="com.xinyi.emp"> 
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> 
+	</context:component-scan>
+	
+	<!-- 配置数据源, 整合其他框架, 事务等. --> 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"> 
+	    <property name="driverClassName"> 
+	           <value>oracle.jdbc.driver.OracleDriver</value> 
+	    </property> 
+	    <property name="url"> 
+	           <value>jdbc:oracle:thin:@127.0.0.1:1521:ORCL</value> 
+	    </property> 
+	    <property name="username"> 
+	           <value>scott</value> 
+	    </property> 
+	    <property name="password"> 
+	           <value>tiger</value> 
+	    </property> 
+	    <property name="maxActive"> 
+	           <value>255</value> 
+	    </property> 
+	    <property name="maxIdle"> 
+	           <value>2</value> 
+	    </property> 
+	    <property name="maxWait"> 
+	           <value>120000</value> 
+	    </property> 
+    </bean>  
+    
+    <!-- 配置事务管理器 -->  
+    <bean id="transactionManager"   
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource"></property>  
+    </bean>  
+      
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+	    <property name = "dataSource" ref="dataSource"></property>
+	</bean>
+    
+    <!-- 启用事务注解 -->  
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
