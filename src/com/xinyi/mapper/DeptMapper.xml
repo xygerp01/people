@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  	<mapper namespace="com.xinyi.mapper.DeptMapper">
+		<resultMap type="com.xinyi.entity.Dept" id="deptRM">
+			<id property="deptno" column="DEPTNO" />
+			<result property="dname" column="DNAME" />
+			<result property="loc" column="LOC" />
+		</resultMap>
+		
+		<resultMap type="com.xinyi.entity.Dept" id="deptEmpRM"  extends="deptRM">
+			<!-- 使用extends继承，不用在中配置部门信息的映射
+				<id property="deptno" column="DEPTNO" />
+				<result property="dname" column="DNAME" />
+				<result property="loc" column="LOC" />
+			 -->
+			 
+			<!-- collection映射多个对象的集合 -->
+			<!-- ofType：集合中的pojo类 -->
+			<collection property="emplist" ofType="com.xinyi.entity.Emp">
+				<id property="empno" column="EMPNO" />
+				<result property="ename" column="ENAME" />
+				<result property="job" column="JOB" />
+			</collection>
+		</resultMap>
+		
+		<select id="find" parameterType="map" resultMap="deptEmpRM">
+			SELECT DEPT.*,EMP.EMPNO,EMP.ENAME,EMP.JOB
+			FROM DEPT,EMP
+			WHERE DEPT.DEPTNO=EMP.DEPTNO
+			AND DEPT.DEPTNO=#{deptno}
+		</select>
+ 	</mapper>
+ 	
+ 	
+ 	
+

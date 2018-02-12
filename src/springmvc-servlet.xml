@@ -8,22 +8,18 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">                   
  
-<!--<context:component-scan base-package="com.allSpring"/>
- 		如果与spring IOC同时使用，为了避免重复扫描bean对象，建议MVC只扫描控制器对象。
-use-default-filters="false"表示不要使用默认的过滤器。默认过滤器包含Service,Component,Repository,Controller注解修饰的类；    
-	    只让springmvc IOC 扫描指定注解 
-     -->
- 	<context:component-scan base-package="com.xinyi.emp" use-default-filters="false">  
+	<!-- 扫描controller包 -->
+ 	<context:component-scan base-package="com.xinyi" use-default-filters="false">  
      	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>  
      	<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>  
 	</context:component-scan>
- 
+ 	
+ 	<!-- servlet在找页面时，走的是dispatcherServlet路线,找不到的时候会报404。加上这个默认的servlet，servlet在找不到的时候会去找静态内容 -->
     <mvc:default-servlet-handler />
- 
- 	<!-- message-codes-resolver="bean ref" validator="" conversion-service=""都是可选配置 -->
+ 	
+ 	<!-- 配置注解的映射器和适配器、以及其他配置如转换器 -->
     <mvc:annotation-driven conversion-service="conversionService" />
     
-    <!-- 转换器 -->
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">  
 		<property name="converters">  
 			<list>  
@@ -33,7 +29,8 @@ use-default-filters="false"表示不要使用默认的过滤器。默认过滤�
 			</list>  
 		</property>
 	</bean> 
-     
+    
+    <!-- 页面转向解析 --> 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
             id="internalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/" />
